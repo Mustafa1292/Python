@@ -1,0 +1,77 @@
+import os
+
+
+def main_menu():
+    print('1. View food menu')
+    print('2. Selected items')
+    print('3. Pay order')
+    print('4. Clear order')
+    print('5. exit')
+
+
+total2 = 0
+
+
+def food_menu():
+    global total2
+    print("What would you like to add to your order?")
+    print("(1) Chicken Sandwich: $3.45")
+    print("(2) Chicken Salad: $4.00")
+    print("(3) French Fries: $1.99")
+    # print("(4) Hotdog: $2.99")
+    # print("(5) Pizza: $3.99")
+    # print("(6) Go to main menu")
+
+
+chosen_foods = []
+
+
+def user_food_choice(food_choice):
+    global total2
+    if food_choice == 1:
+        total2 = total2 + 3.45
+        print('you chose Chicken Sandwich for $3.45')
+        chosen_foods.append('Chicken sandwich: $3.45')
+    if food_choice == 2:
+        print('you chose Chicken Salad for $4.00"')
+        total2 = total2 + 4.00
+        chosen_foods.append('Chicken sandwich: $4.00')
+    if food_choice == 3:
+        print('you chose French Fries for $1.99')
+        total2 = total2 + 1.99
+        chosen_foods.append('Chicken sandwich: $1.99')
+
+
+main_menu()
+user_option = int(input('welcome please choose an option: '))
+os.system('CLS' if os.name == 'nt' else 'clear')
+
+while user_option != 5:  # user_option will always be true, prompting the user to chooses an option
+    # main_menu()
+    # user_option = int(input('Please choose an opti: '))
+    if user_option == 1:
+        food_menu()
+        food_choice = int(input("choose a food selection: "))
+        user_food_choice(food_choice)
+        main_menu()
+        user_option = int(input('Please choose an option: '))
+
+    if user_option == 2:
+        if len(chosen_foods) == 0:
+            print('you have no items selected')
+        else:
+            print('you selection: ')
+            for i in chosen_foods:
+                print(i)
+        main_menu()
+        user_option = int(input('Please choose an option: '))
+    if user_option == 3:
+        print('thank you for your payment enjoy!')
+        break
+    if user_option == 4:
+        print('order cleared')
+        food_menu()
+        chosen_foods = []
+        user_option = int(input('Please choose an option: '))
+
+
