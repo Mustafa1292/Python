@@ -1,0 +1,55 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import os
+import pandas as pd
+from datetime import datetime
+import sys
+
+os.environ['PATH'] += r"C:\Driver"  # Solves the path issue
+
+application_path = os.path.dirname(sys.executable)
+now = datetime.now()
+#MMDDYY
+month_day_year = now.strftime("%m%d%Y")
+
+#headless mode accesses the website in the background without opening it
+options = Options()
+options.headless = True
+
+web = 'https://www.the-sun.com/motors/'  # The website you want to scrape
+driver = webdriver.Chrome(options=options)  # starts chrome
+driver.get(web)  # loads the website
+
+containers = driver.find_elements(by='xpath',
+                                  value="//div[@class='teaser__copy-container']")  # finds all the elements with this xpath returns a list
+
+titles = []
+subtitles = []
+links = []
+
+for container in containers:
+    title = container.find_element(by='xpath', value="./a/h2").text
+    subtitle = container.find_element(by='xpath', value="./a/p").text
+    # //div[@class='teaser__copy-container']/a/h2
+    link = container.find_element(by='xpath', value="./a").get_attribute("href") #gets the attribute
+    titles.append(title)
+    subtitles.append(subtitle)
+    links.append(link)
+
+my_dict = {'title': titles, 'subtitle': subtitles, 'link': links}
+df_headlines = pd.DataFrame(my_dict)
+file_name = f'headlines-{month_day_year}.csv'
+final_path = os.path.join(application_path, file_name)
+df_headlines.to_csv(final_path)
+driver.quit()
+
+#to have the code automatically run everyday or specified time, use library pyinstaller (to convert file to .ex)
+# run the command pyinstaller --onefile {filename}, run this in the dir of the py file
+#use crontab or task scheduler
+
+'''this will create a spec file
+
+The spec file tells PyInstaller how to process your script. It encodes the script names and most of the options you 
+give to the pyinstaller command. The spec file is actually executable Python code. 
+https://scrapinghub.github.io/xpath-playground/
+'''
